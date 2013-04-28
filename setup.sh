@@ -11,7 +11,7 @@ function up_config()
             /usr/bin/env git pull &
         else
             echo "\033[0;33mYou already have installed configuration directory but is not git repo. I'll back it to conf.back\033[0m"
-            mv ~/conf/ `~/conf.back.$(date +%Y_%m_%d_%H_%M_%S)`
+            mv ~/conf/ ~/.back.conf.$(date +%Y.%m.%d.%H.%M.%S)
 
             echo "\033[0;33mCloning in to my configuration scripts...\033[0m"
             cd ~ &&
@@ -27,7 +27,7 @@ function up_config()
 
     if [ -f ~/.bashrc ]
     then
-        mv ~/.bashrc `~/.bashrc.back.$(date +%Y_%m_%d_%H_%M_%S)`
+        mv ~/.bashrc ~/.back.bashrc.$(date +%Y.%m.%d.%H.%M.%S)
     fi
 
     touch ~/.bashrc
@@ -55,7 +55,7 @@ function up_config()
     #.gitconfig
     if [ -f ~/.gitconfig ]
     then
-        mv ~/.gitconfig `~/.gitconfig.back.$(date +%Y_%m_%d_%H_%M_%S)`
+        mv ~/.gitconfig ~/.back.gitconfig.$(date +%Y.%m.%d.%H.%M.%S)
     fi
     cp ~/conf/.gitconfig ~/.gitconfig
     #.gitconfig
@@ -63,14 +63,14 @@ function up_config()
     #.vimperatorrc _vimperatorrc
     if [ -f ~/.vimperatorrc ]
     then
-        mv ~/.vimperatorrc `~/.vimperatorrc.back.$(date +%Y_%m_%d_%H_%M_%S)`
+        mv ~/.vimperatorrc ~/.back.vimperatorrc.$(date +%Y.%m.%d.%H.%M.%S)
     fi
     touch ~/.vimperatorrc
     echo "source ~/conf/.vimperatorrc" >>~/.vimperatorrc
 
     if [ -f ~/_vimperatorrc ]
     then
-        mv ~/_vimperatorrc `~/_vimperatorrc.back.$(date +%Y_%m_%d_%H_%M_%S)`
+        mv ~/_vimperatorrc ~/.back._vimperatorrc.$(date +%Y.%m.%d.%H.%M.%S)
     fi
     touch ~/_vimperatorrc
     echo "source ~/conf/.vimperatorrc" >>~/_vimperatorrc
@@ -90,7 +90,7 @@ function up_vim_scripts()
             /usr/bin/env git pull &
         else
             echo "\033[0;33mYou already have installed .vim directory but is not git repo. I'll back it to .vim.back\033[0m"
-            mv ~/.vim/ `~/.vim.back.$(date +%Y_%m_%d_%H_%M_%S)`
+            mv ~/.vim/ ~/.back.vim.$(date +%Y.%m.%d.%H.%M.%S)
 
             echo "\033[0;33mCloning in to my vim scripts...\033[0m"
             /usr/bin/env git clone https://github.com/nkwsqyyzx/.vim.git &
@@ -116,17 +116,18 @@ function up_vim_scripts()
     echo "\033[0;33mBuild _vimrc or .vimrc...\033[0m"
     if [ -f ~/.vimrc ]
     then
-        mv ~/.vimrc `~/.vimrc.back.$(date +%Y_%m_%d_%H_%M_%S)`
+        mv ~/.vimrc ~/.back.vimrc.$(date +%Y.%m.%d.%H.%M.%S)
     fi
 
     touch ~/.vimrc
     echo "let g:dev_env = 'csharpdev'" >> ~/.vimrc
     echo "let g:work_directory = ''" >> ~/.vimrc
     echo "source ~/.vim/.vimrc" >> ~/.vimrc
+    dos2unix ~/.vimrc
 
     if [ -f ~/_vimrc ]
     then
-        mv ~/_vimrc `~/_vimrc.back.$(date +%Y_%m_%d_%H_%M_%S)`
+        mv ~/_vimrc ~/.back._vimrc.$(date +%Y.%m.%d.%H.%M.%S)
     fi
 
     touch ~/_vimrc
@@ -135,12 +136,6 @@ function up_vim_scripts()
     echo "source ~/.vim/.vimrc" >> ~/_vimrc
 
     echo "\033[0;33mFinshed.Maybe you will modify your .vimrc or _vimrc to restore previous settings.Enjoy Now!\033[0m"
-}
-
-echo "\033[0;34mChecking git installed...\033[0m"
-hash git >/dev/null && /usr/bin/env git status || {
-  echo "git not installed"
-  exit
 }
 
 up_vim_scripts
