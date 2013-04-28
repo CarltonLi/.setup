@@ -138,5 +138,7 @@ function up_vim_scripts()
     echo "\033[0;33mFinshed.Maybe you will modify your .vimrc or _vimrc to restore previous settings.Enjoy Now!\033[0m"
 }
 
-up_vim_scripts
-up_config
+up_vim_scripts &
+wait $!
+up_config &
+wait $!
