@@ -42,10 +42,10 @@ function up_config()
     echo "" >> ~/.bashrc
     echo "alias ow='ow_'" >> ~/.bashrc
     echo "function ow_ () {" >> ~/.bashrc
-    echo "   if [ $# = 0 ]; then" >> ~/.bashrc
+    echo "   if [ \$# = 0 ]; then" >> ~/.bashrc
     echo "      o *.sln" >> ~/.bashrc
     echo "   else" >> ~/.bashrc
-    echo "      o "$*/"*.sln" >> ~/.bashrc
+    echo "      o "\$*/"*.sln" >> ~/.bashrc
     echo "   fi" >> ~/.bashrc
     echo "}" >> ~/.bashrc
     echo "" >> ~/.bashrc
