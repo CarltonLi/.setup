@@ -8,10 +8,10 @@ set up or update personal settings.
 
 You can install this via the command line with either `curl` or `wget`.
 
-. via `curl`
+>> via curl
 
-curl -L https://raw.github.com/nkwsqyyzx/.setup/master/setup.sh | bash
+`curl -L https://raw.github.com/nkwsqyyzx/.setup/master/setup.sh | bash`
 
-. via `wget`
+>> via wget
 
-wget --no-check-certificate https://raw.github.com/nkwsqyyzx/.setup/master/setup.sh -O - | bash
+`wget --no-check-certificate https://raw.github.com/nkwsqyyzx/.setup/master/setup.sh -O - | bash`
