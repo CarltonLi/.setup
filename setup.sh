@@ -6,24 +6,24 @@ function up_config()
     then
         if [ -d ~/conf/.git ]
         then
-            echo "\033[0;33mYou already have installed configuration scripts. I'll update .vim\033[0m"
+            echo "You already have installed configuration scripts. I'll update configuration"
             cd ~/conf &&
             /usr/bin/env git pull &
         else
-            echo "\033[0;33mYou already have installed configuration directory but is not git repo. I'll back it to conf.back\033[0m"
+            echo "You already have installed configuration directory but is not git repo. I'll back it to conf.back"
             mv ~/conf/ ~/.back.conf.$(date +%Y.%m.%d.%H.%M.%S)
 
-            echo "\033[0;33mCloning in to my configuration scripts...\033[0m"
+            echo "Cloning in to my configuration scripts..."
             cd ~ &&
             /usr/bin/env git clone https://github.com/nkwsqyyzx/conf.git &
         fi
     else
         cd ~
-        echo "\033[0;33mCloning in to my vim scripts...\033[0m"
+        echo "Cloning in to my vim scripts..."
         /usr/bin/env git clone https://github.com/nkwsqyyzx/conf.git &
     fi
     wait $!
-    echo "\033[0;33mBuilding self files.\033[0m"
+    echo "Building self files."
 
     if [ -f ~/.bashrc ]
     then
@@ -76,7 +76,7 @@ function up_config()
     echo "source ~/conf/.vimperatorrc" >>~/_vimperatorrc
     #.vimperatorrc _vimperatorrc
 
-    echo "\033[0;33mThe configure scripts is latest.Enjoy NOW!\033[0m"
+    echo "The configure scripts is latest.Enjoy NOW!"
 }
 
 function up_vim_scripts()
@@ -85,35 +85,35 @@ function up_vim_scripts()
     then
         if [ -d ~/.vim/.git ]
         then
-            echo "\033[0;33mYou already have installed .vim scripts. I'll update .vim\033[0m"
+            echo "You already have installed .vim scripts. I'll update .vim"
             cd ~/.vim &&
             /usr/bin/env git pull &
         else
-            echo "\033[0;33mYou already have installed .vim directory but is not git repo. I'll back it to .vim.back\033[0m"
+            echo "You already have installed .vim directory but is not git repo. I'll back it to .vim.back"
             mv ~/.vim/ ~/.back.vim.$(date +%Y.%m.%d.%H.%M.%S)
 
-            echo "\033[0;33mCloning in to my vim scripts...\033[0m"
+            echo "Cloning in to my vim scripts..."
             /usr/bin/env git clone https://github.com/nkwsqyyzx/.vim.git &
         fi
     else
         cd ~
-        echo "\033[0;33mCloning in to my vim scripts...\033[0m"
+        echo "Cloning in to my vim scripts..."
         /usr/bin/env git clone https://github.com/nkwsqyyzx/.vim.git &
     fi
 
     wait $!
 
-    echo "\033[0;33mFetched the new source,handle submodules...\033[0m"
+    echo "Fetched the new source,handle submodules..."
     /usr/bin/env git submodule update --init &
     wait $!
-    echo "\033[0;33mCheck out master for submodules...\033[0m"
+    echo "Check out master for submodules..."
     /usr/bin/env git submodule foreach git checkout master &
     wait $!
-    echo "\033[0;33mUpdating submodules...\033[0m"
+    echo "Updating submodules..."
     /usr/bin/env git submodule foreach git pull &
     wait $!
 
-    echo "\033[0;33mBuild _vimrc or .vimrc...\033[0m"
+    echo "Build _vimrc or .vimrc..."
     if [ -f ~/.vimrc ]
     then
         mv ~/.vimrc ~/.back.vimrc.$(date +%Y.%m.%d.%H.%M.%S)
@@ -135,7 +135,7 @@ function up_vim_scripts()
     echo "let g:work_directory = ''" >> ~/_vimrc
     echo "source ~/.vim/.vimrc" >> ~/_vimrc
 
-    echo "\033[0;33mFinshed.Maybe you will modify your .vimrc or _vimrc to restore previous settings.Enjoy Now!\033[0m"
+    echo "Finshed.Maybe you will modify your .vimrc or _vimrc to restore previous settings.Enjoy Now!"
 }
 
 up_vim_scripts &
