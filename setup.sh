@@ -1,5 +1,28 @@
 #!/bin/sh
 
+function build_bashrc()
+{
+cat >~/.bashrc <<EOF
+source ~/conf/.bashrc
+
+# aliases for working project.
+alias cw='cd /cygdrive/drive/path/to/your/favorite/path'
+alias ow='o *.sln'
+alias op='o ..'
+
+alias ow='ow_'
+function ow_ () {
+   if [ $# = 0 ]; then
+      o *.sln
+   else
+      o $*/*.sln
+   fi
+}
+
+alias qq='nircmd.exe win close class CabinetWClass'
+EOF
+}
+
 function up_config()
 {
     if [ -d ~/conf ]
@@ -33,23 +56,7 @@ function up_config()
     touch ~/.bashrc
 
     # .bashrc
-    echo "source ~/conf/.bashrc" >> ~/.bashrc
-    echo "" >> ~/.bashrc
-    echo "# aliases for working project." >> ~/.bashrc
-    echo "alias cw='cd /cygdrive/e/win8/Sipo/trunk'" >> ~/.bashrc
-    echo "alias ow='o *.sln'" >> ~/.bashrc
-    echo "alias op='o ..'" >> ~/.bashrc
-    echo "" >> ~/.bashrc
-    echo "alias ow='ow_'" >> ~/.bashrc
-    echo "function ow_ () {" >> ~/.bashrc
-    echo "   if [ \$# = 0 ]; then" >> ~/.bashrc
-    echo "      o *.sln" >> ~/.bashrc
-    echo "   else" >> ~/.bashrc
-    echo "      o "\$*/"*.sln" >> ~/.bashrc
-    echo "   fi" >> ~/.bashrc
-    echo "}" >> ~/.bashrc
-    echo "" >> ~/.bashrc
-    echo "alias qq='nircmd.exe win close class "CabinetWClass"'" >> ~/.bashrc
+    build_bashrc
     # .bashrc
 
     #.gitconfig
