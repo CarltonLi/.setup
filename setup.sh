@@ -111,13 +111,7 @@ function up_vim_scripts()
     wait $!
 
     echo "Fetched the new source,handle submodules..."
-    /usr/bin/env git submodule update --init &
-    wait $!
-    echo "Check out master for submodules..."
-    /usr/bin/env git submodule foreach git checkout master &
-    wait $!
-    echo "Updating submodules..."
-    /usr/bin/env git submodule foreach git pull &
+    /usr/bin/env git submodule update --init --recursive &
     wait $!
 
     echo "Build _vimrc or .vimrc..."
