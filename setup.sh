@@ -111,6 +111,7 @@ function up_vim_scripts()
     wait $!
 
     echo "Fetched the new source,handle submodules..."
+    cd ~/.vim
     /usr/bin/env git submodule update --init --recursive &
     wait $!
 
