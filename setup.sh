@@ -1,146 +1,141 @@
 #!/bin/sh
 
+
+
+# ----------------------------------------initialize----------------------------------------
+__lower_case(){
+    echo "$1" | sed "y/ABCDEFGHIJKLMNOPQRSTUVWXYZ/abcdefghijklmnopqrstuvwxyz/"
+}
+
+__sys_info(){
+    SYS_OS=$(__lower_case $(uname))
+    SYS_KERNEL=$(uname -r)
+    SYS_MACH=$(uname -m)
+
+    # TODO.fix me when in mingw32 and other linux.
+    if [[ "${SYS_OS}" == mingw32_nt* ]]; then
+        SYS_OS=windows_mingw
+    elif [[ "${SYS_OS}" == cygwin_nt* ]]; then
+        SYS_OS=windows_cygwin
+    elif [[ "${SYS_OS}" = "darwin" ]]; then
+        SYS_OS=mac
+    else
+        SYS_OS=linux
+    fi
+}
+__sys_info
+# ----------------------------------------end----------------------------------------
+
+
+
+
+
+command_exists () {
+    command -v "$1" &> /dev/null;
+}
+
+if command_exists nircmd ; then
+    echo "you have nircmd installed."
+else
+    echo "you don't have nircmd in your path.please check it out or else you can't use qq to close all windows."
+fi
+
 function build_bashrc()
 {
-cat >~/.bashrc <<EOF
-source ~/conf/.bashrc
+    cat >~/.bashrc <<EOF
+    source ~/conf/.bashrc
 
-# aliases for working project.
-alias cw='cd /cygdrive/drive/path/to/your/favorite/path'
-alias ow='o *.sln'
-alias op='o ..'
+    # aliases for working project.
+    alias cw='cd /cygdrive/drive/path/to/your/favorite/path'
+    alias ow='o *.sln'
+    alias op='o ..'
 
-alias ow='ow_'
-function ow_ () {
-   if [ $# = 0 ]; then
-      o *.sln
-   else
-      o $*/*.sln
-   fi
+    alias ow='ow_'
+    function ow_ () {
+    if [ $# = 0 ]; then
+        o *.sln
+    else
+        o $*/*.sln
+    fi
 }
 
 alias qq='nircmd.exe win close class CabinetWClass'
 EOF
 }
 
-function up_config()
+back_dir=back_$(date +%Y_%m_%d_%H_%M_%S)
+function ensure_back_dir()
 {
-    if [ -d ~/conf ]
+    if [ ! -d ~/$back_dir ]
     then
-        if [ -d ~/conf/.git ]
-        then
-            echo "You already have installed configuration scripts. I'll update configuration"
-            cd ~/conf &&
-            /usr/bin/env git pull &
-        else
-            echo "You already have installed configuration directory but is not git repo. I'll back it to conf.back"
-            mv ~/conf/ ~/.back.conf.$(date +%Y.%m.%d.%H.%M.%S)
-
-            echo "Cloning in to my configuration scripts..."
-            cd ~ &&
-            /usr/bin/env git clone https://github.com/nkwsqyyzx/conf.git &
-        fi
-    else
-        cd ~
-        echo "Cloning in to my vim scripts..."
-        /usr/bin/env git clone https://github.com/nkwsqyyzx/conf.git &
+        mkdir ~/$back_dir
     fi
+}
+
+function backupoldfile()
+{
+    for var in "$@"
+    do
+        echo "\$var is $var"
+        if [ -d "$var" ] || [ -f "$var" ]
+        then
+            ensure_back_dir
+            mv "$var" ~/$back_dir/$var
+            echo "$var moved to $back_dir/"
+        fi
+    done
+}
+
+cd ~
+backupoldfile .bashrc .zshrc .zsh_alias
+backupoldfile .vim/ .vimrc _vimrc _vimperatorrc .vimperatorrc
+backupoldfile conf/ .gitconfig
+
+function getConfigurations()
+{
+    cd ~
+    echo "Cloning in to my vim scripts..."
+    /usr/bin/env git clone https://github.com/nkwsqyyzx/conf.git &
     wait $!
     echo "Building self files."
-
-    if [ -f ~/.bashrc ]
-    then
-        mv ~/.bashrc ~/.back.bashrc.$(date +%Y.%m.%d.%H.%M.%S)
-    fi
-
-    touch ~/.bashrc
 
     # .bashrc
     build_bashrc
     # .bashrc
 
     #.gitconfig
-    if [ -f ~/.gitconfig ]
-    then
-        mv ~/.gitconfig ~/.back.gitconfig.$(date +%Y.%m.%d.%H.%M.%S)
-    fi
     cp ~/conf/.gitconfig ~/.gitconfig
     #.gitconfig
 
     #.vimperatorrc _vimperatorrc
-    if [ -f ~/.vimperatorrc ]
-    then
-        mv ~/.vimperatorrc ~/.back.vimperatorrc.$(date +%Y.%m.%d.%H.%M.%S)
-    fi
-    touch ~/.vimperatorrc
     echo "source ~/conf/.vimperatorrc" >>~/.vimperatorrc
-
-    if [ -f ~/_vimperatorrc ]
-    then
-        mv ~/_vimperatorrc ~/.back._vimperatorrc.$(date +%Y.%m.%d.%H.%M.%S)
-    fi
-    touch ~/_vimperatorrc
     echo "source ~/conf/.vimperatorrc" >>~/_vimperatorrc
     #.vimperatorrc _vimperatorrc
 
     echo "The configure scripts is latest.Enjoy NOW!"
 }
 
-function up_vim_scripts()
+function getVimScripts()
 {
-    if [ -d ~/.vim ]
-    then
-        if [ -d ~/.vim/.git ]
-        then
-            echo "You already have installed .vim scripts. I'll update .vim"
-            cd ~/.vim &&
-            /usr/bin/env git pull &
-        else
-            echo "You already have installed .vim directory but is not git repo. I'll back it to .vim.back"
-            mv ~/.vim/ ~/.back.vim.$(date +%Y.%m.%d.%H.%M.%S)
-
-            echo "Cloning in to my vim scripts..."
-            /usr/bin/env git clone https://github.com/nkwsqyyzx/.vim.git &
-        fi
-    else
-        cd ~
-        echo "Cloning in to my vim scripts..."
-        /usr/bin/env git clone https://github.com/nkwsqyyzx/.vim.git &
-    fi
-
-    wait $!
+    cd ~
+    echo "Cloning in to my vim scripts..."
+    /usr/bin/env git clone https://github.com/nkwsqyyzx/.vim.git & wait $!
 
     echo "Fetched the new source,handle submodules..."
     cd ~/.vim
-    /usr/bin/env git submodule update --init --recursive &
-    wait $!
+    /usr/bin/env git submodule update --init --recursive & wait $!
 
     echo "Build _vimrc or .vimrc..."
-    if [ -f ~/.vimrc ]
-    then
-        mv ~/.vimrc ~/.back.vimrc.$(date +%Y.%m.%d.%H.%M.%S)
-    fi
-
-    touch ~/.vimrc
     echo "let g:dev_env = 'csharpdev'" >> ~/.vimrc
-    echo "let g:work_directory = ''" >> ~/.vimrc
+    echo "let g:work_directory = '/path/to/your/favorate/project/path'" >> ~/.vimrc
     echo "source ~/.vim/.vimrc" >> ~/.vimrc
+    echo "au BufNewFile,BufRead *.py set tabstop=4 softtabstop=4 shiftwidth=4 expandtab smarttab autoindent" >> ~/.vimrc
     dos2unix ~/.vimrc
 
-    if [ -f ~/_vimrc ]
-    then
-        mv ~/_vimrc ~/.back._vimrc.$(date +%Y.%m.%d.%H.%M.%S)
-    fi
-
-    touch ~/_vimrc
-    echo "let g:dev_env = 'csharpdev'" >> ~/_vimrc
-    echo "let g:work_directory = ''" >> ~/_vimrc
-    echo "source ~/.vim/.vimrc" >> ~/_vimrc
+    cp ~/.vimrc ~/_vimrc
 
     echo "Finshed.Maybe you will modify your .vimrc or _vimrc to restore previous settings.Enjoy Now!"
 }
 
-up_vim_scripts &
-wait $!
-up_config &
-wait $!
+getConfigurations & wait $!
+getVimScripts & wait $!
